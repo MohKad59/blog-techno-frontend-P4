@@ -25,20 +25,44 @@ const AvisList = () => {
 	}, []);
 
 	const fetchAvis = async () => {
-		const response = await axios.get(`${process.env.REACT_APP_API_URL}/avis`);
-		setAvis(response.data);
+		try {
+			const response = await axios.get(`${process.env.REACT_APP_API_URL}/avis`);
+			setAvis(response.data);
+			console.log("Avis chargés :", response.data);
+		} catch (error) {
+			console.error("Erreur lors du chargement des avis :", error);
+		}
 	};
 
 	const fetchProduits = async () => {
-		const response = await axios.get(
-			`${process.env.REACT_APP_API_URL}/produits`,
-		);
-		setProduits(response.data);
+		try {
+			const response = await axios.get(
+				`${process.env.REACT_APP_API_URL}/produits`,
+			);
+			setProduits(response.data);
+			console.log("Produits chargés pour avis :", response.data);
+		} catch (error) {
+			console.error("Erreur lors du chargement des produits :", error);
+		}
 	};
 
 	const supprimerAvis = async (id: number) => {
-		await axios.delete(`${process.env.REACT_APP_API_URL}/avis/${id}`);
+		try {
+			await axios.delete(`${process.env.REACT_APP_API_URL}/avis/${id}`);
+			console.log(`Avis ${id} supprimé`);
+			fetchAvis();
+		} catch (error) {
+			console.error("Erreur lors de la suppression de l’avis :", error);
+		}
+	};
+
+	const handleSave = () => {
 		fetchAvis();
+		setAvisAEditer(null);
+	};
+
+	const annulerEdition = () => {
+		setAvisAEditer(null);
 	};
 
 	return (
@@ -46,8 +70,13 @@ const AvisList = () => {
 			<AvisForm
 				avis={avisAEditer || undefined}
 				produits={produits}
-				onSave={fetchAvis}
+				onSave={handleSave}
 			/>
+			{avisAEditer && (
+				<button type="button" onClick={annulerEdition} className="cancel-btn">
+					Annuler
+				</button>
+			)}
 			<div className="grid">
 				{avis.map((avis) => (
 					<div key={avis.id} className="card">

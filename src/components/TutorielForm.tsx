@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 interface TutorielFormProps {
@@ -11,26 +11,47 @@ interface TutorielFormProps {
 const TutorielForm = ({ tutoriel, produits, onSave }: TutorielFormProps) => {
 	const [titre, setTitre] = useState(tutoriel?.titre || "");
 	const [contenu, setContenu] = useState(tutoriel?.contenu || "");
-	const [produitId, setProduitId] = useState(tutoriel?.produit_id || "");
+	const [produitId, setProduitId] = useState(
+		tutoriel?.produit_id?.toString() || "",
+	);
+
+	useEffect(() => {
+		if (tutoriel) {
+			setTitre(tutoriel.titre);
+			setContenu(tutoriel.contenu);
+			setProduitId(tutoriel.produit_id.toString());
+		} else {
+			setTitre("");
+			setContenu("");
+			setProduitId("");
+		}
+	}, [tutoriel]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		if (tutoriel) {
-			await axios.put(
-				`${process.env.REACT_APP_API_URL}/tutoriels/${tutoriel.id}`,
-				{ titre, contenu, produit_id: produitId },
-			);
-		} else {
-			await axios.post(`${process.env.REACT_APP_API_URL}/tutoriels`, {
-				titre,
-				contenu,
-				produit_id: produitId,
-			});
+		try {
+			if (tutoriel) {
+				await axios.put(
+					`${process.env.REACT_APP_API_URL}/tutoriels/${tutoriel.id}`,
+					{
+						titre,
+						contenu,
+						produit_id: Number.parseInt(produitId),
+					},
+				);
+				console.log(`Tutoriel ${tutoriel.id} modifié`);
+			} else {
+				await axios.post(`${process.env.REACT_APP_API_URL}/tutoriels`, {
+					titre,
+					contenu,
+					produit_id: Number.parseInt(produitId),
+				});
+				console.log("Tutoriel ajouté");
+			}
+			onSave();
+		} catch (error) {
+			console.error("Erreur lors de la sauvegarde du tutoriel :", error);
 		}
-		onSave();
-		setTitre("");
-		setContenu("");
-		setProduitId("");
 	};
 
 	return (

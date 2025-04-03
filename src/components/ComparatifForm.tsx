@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 interface ComparatifFormProps {
@@ -21,29 +21,54 @@ const ComparatifForm = ({
 }: ComparatifFormProps) => {
 	const [titre, setTitre] = useState(comparatif?.titre || "");
 	const [contenu, setContenu] = useState(comparatif?.contenu || "");
-	const [produit1Id, setProduit1Id] = useState(comparatif?.produit1_id || "");
-	const [produit2Id, setProduit2Id] = useState(comparatif?.produit2_id || "");
+	const [produit1Id, setProduit1Id] = useState(
+		comparatif?.produit1_id?.toString() || "",
+	);
+	const [produit2Id, setProduit2Id] = useState(
+		comparatif?.produit2_id?.toString() || "",
+	);
+
+	useEffect(() => {
+		if (comparatif) {
+			setTitre(comparatif.titre);
+			setContenu(comparatif.contenu);
+			setProduit1Id(comparatif.produit1_id.toString());
+			setProduit2Id(comparatif.produit2_id.toString());
+		} else {
+			setTitre("");
+			setContenu("");
+			setProduit1Id("");
+			setProduit2Id("");
+		}
+	}, [comparatif]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		if (comparatif) {
-			await axios.put(
-				`${process.env.REACT_APP_API_URL}/comparatifs/${comparatif.id}`,
-				{ titre, contenu, produit1_id: produit1Id, produit2_id: produit2Id },
-			);
-		} else {
-			await axios.post(`${process.env.REACT_APP_API_URL}/comparatifs`, {
-				titre,
-				contenu,
-				produit1_id: produit1Id,
-				produit2_id: produit2Id,
-			});
+		try {
+			if (comparatif) {
+				await axios.put(
+					`${process.env.REACT_APP_API_URL}/comparatifs/${comparatif.id}`,
+					{
+						titre,
+						contenu,
+						produit1_id: Number.parseInt(produit1Id),
+						produit2_id: Number.parseInt(produit2Id),
+					},
+				);
+				console.log(`Comparatif ${comparatif.id} modifié`);
+			} else {
+				await axios.post(`${process.env.REACT_APP_API_URL}/comparatifs`, {
+					titre,
+					contenu,
+					produit1_id: Number.parseInt(produit1Id),
+					produit2_id: Number.parseInt(produit2Id),
+				});
+				console.log("Comparatif ajouté");
+			}
+			onSave();
+		} catch (error) {
+			console.error("Erreur lors de la sauvegarde du comparatif :", error);
 		}
-		onSave();
-		setTitre("");
-		setContenu("");
-		setProduit1Id("");
-		setProduit2Id("");
 	};
 
 	return (

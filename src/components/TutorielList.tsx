@@ -26,22 +26,46 @@ const TutorielList = () => {
 	}, []);
 
 	const fetchTutoriels = async () => {
-		const response = await axios.get(
-			`${process.env.REACT_APP_API_URL}/tutoriels`,
-		);
-		setTutoriels(response.data);
+		try {
+			const response = await axios.get(
+				`${process.env.REACT_APP_API_URL}/tutoriels`,
+			);
+			setTutoriels(response.data);
+			console.log("Tutoriels chargés :", response.data);
+		} catch (error) {
+			console.error("Erreur lors du chargement des tutoriels :", error);
+		}
 	};
 
 	const fetchProduits = async () => {
-		const response = await axios.get(
-			`${process.env.REACT_APP_API_URL}/produits`,
-		);
-		setProduits(response.data);
+		try {
+			const response = await axios.get(
+				`${process.env.REACT_APP_API_URL}/produits`,
+			);
+			setProduits(response.data);
+			console.log("Produits chargés pour tutoriels :", response.data);
+		} catch (error) {
+			console.error("Erreur lors du chargement des produits :", error);
+		}
 	};
 
 	const supprimerTutoriel = async (id: number) => {
-		await axios.delete(`${process.env.REACT_APP_API_URL}/tutoriels/${id}`);
+		try {
+			await axios.delete(`${process.env.REACT_APP_API_URL}/tutoriels/${id}`);
+			console.log(`Tutoriel ${id} supprimé`);
+			fetchTutoriels();
+		} catch (error) {
+			console.error("Erreur lors de la suppression du tutoriel :", error);
+		}
+	};
+
+	const handleSave = () => {
 		fetchTutoriels();
+		setTutorielAEditer(null);
+	};
+
+	const annulerEdition = () => {
+		setTutorielAEditer(null);
 	};
 
 	return (
@@ -49,8 +73,13 @@ const TutorielList = () => {
 			<TutorielForm
 				tutoriel={tutorielAEditer || undefined}
 				produits={produits}
-				onSave={fetchTutoriels}
+				onSave={handleSave}
 			/>
+			{tutorielAEditer && (
+				<button type="button" onClick={annulerEdition} className="cancel-btn">
+					Annuler
+				</button>
+			)}
 			<div className="grid">
 				{tutoriels.map((tutoriel) => (
 					<div key={tutoriel.id} className="card">

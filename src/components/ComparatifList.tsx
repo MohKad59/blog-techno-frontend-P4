@@ -30,22 +30,46 @@ const ComparatifList = () => {
 	}, []);
 
 	const fetchComparatifs = async () => {
-		const response = await axios.get(
-			`${process.env.REACT_APP_API_URL}/comparatifs`,
-		);
-		setComparatifs(response.data);
+		try {
+			const response = await axios.get(
+				`${process.env.REACT_APP_API_URL}/comparatifs`,
+			);
+			setComparatifs(response.data);
+			console.log("Comparatifs chargés :", response.data);
+		} catch (error) {
+			console.error("Erreur lors du chargement des comparatifs :", error);
+		}
 	};
 
 	const fetchProduits = async () => {
-		const response = await axios.get(
-			`${process.env.REACT_APP_API_URL}/produits`,
-		);
-		setProduits(response.data);
+		try {
+			const response = await axios.get(
+				`${process.env.REACT_APP_API_URL}/produits`,
+			);
+			setProduits(response.data);
+			console.log("Produits chargés pour comparatifs :", response.data);
+		} catch (error) {
+			console.error("Erreur lors du chargement des produits :", error);
+		}
 	};
 
 	const supprimerComparatif = async (id: number) => {
-		await axios.delete(`${process.env.REACT_APP_API_URL}/comparatifs/${id}`);
+		try {
+			await axios.delete(`${process.env.REACT_APP_API_URL}/comparatifs/${id}`);
+			console.log(`Comparatif ${id} supprimé`);
+			fetchComparatifs();
+		} catch (error) {
+			console.error("Erreur lors de la suppression du comparatif :", error);
+		}
+	};
+
+	const handleSave = () => {
 		fetchComparatifs();
+		setComparatifAEditer(null);
+	};
+
+	const annulerEdition = () => {
+		setComparatifAEditer(null);
 	};
 
 	return (
@@ -53,8 +77,13 @@ const ComparatifList = () => {
 			<ComparatifForm
 				comparatif={comparatifAEditer || undefined}
 				produits={produits}
-				onSave={fetchComparatifs}
+				onSave={handleSave}
 			/>
+			{comparatifAEditer && (
+				<button type="button" onClick={annulerEdition} className="cancel-btn">
+					Annuler
+				</button>
+			)}
 			<div className="grid">
 				{comparatifs.map((comparatif) => (
 					<div key={comparatif.id} className="card">

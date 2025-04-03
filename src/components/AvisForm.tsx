@@ -11,26 +11,43 @@ interface AvisFormProps {
 const AvisForm = ({ avis, produits, onSave }: AvisFormProps) => {
 	const [contenu, setContenu] = useState(avis?.contenu || "");
 	const [note, setNote] = useState(avis?.note || 1);
-	const [produitId, setProduitId] = useState(avis?.produit_id || "");
+	const [produitId, setProduitId] = useState(
+		avis?.produit_id?.toString() || "",
+	);
+
+	useEffect(() => {
+		if (avis) {
+			setContenu(avis.contenu);
+			setNote(avis.note);
+			setProduitId(avis.produit_id.toString());
+		} else {
+			setContenu("");
+			setNote(1);
+			setProduitId("");
+		}
+	}, [avis]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		if (avis) {
-			await axios.put(`${process.env.REACT_APP_API_URL}/avis/${avis.id}`, {
-				contenu,
-				note,
-			});
-		} else {
-			await axios.post(`${process.env.REACT_APP_API_URL}/avis`, {
-				contenu,
-				note,
-				produit_id: produitId,
-			});
+		try {
+			if (avis) {
+				await axios.put(`${process.env.REACT_APP_API_URL}/avis/${avis.id}`, {
+					contenu,
+					note,
+				});
+				console.log(`Avis ${avis.id} modifié`);
+			} else {
+				await axios.post(`${process.env.REACT_APP_API_URL}/avis`, {
+					contenu,
+					note,
+					produit_id: Number.parseInt(produitId),
+				});
+				console.log("Avis ajouté");
+			}
+			onSave();
+		} catch (error) {
+			console.error("Erreur lors de la sauvegarde de l’avis :", error);
 		}
-		onSave();
-		setContenu("");
-		setNote(1);
-		setProduitId("");
 	};
 
 	return (
