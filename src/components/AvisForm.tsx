@@ -46,12 +46,14 @@ const AvisForm = ({ avis, produits, onSave }: AvisFormProps) => {
 			}
 			onSave();
 		} catch (error) {
-			console.error("Erreur lors de la sauvegarde de l’avis :", error);
+			console.error("Erreur lors de la sauvegarde de l'avis :", error);
 		}
 	};
 
 	return (
 		<form onSubmit={handleSubmit} className="form">
+			<h2>{avis ? "Modifier l'Avis" : "Ajouter un Avis"}</h2>
+
 			<textarea
 				value={contenu}
 				onChange={(e) => setContenu(e.target.value)}

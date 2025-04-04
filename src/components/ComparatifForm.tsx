@@ -73,13 +73,17 @@ const ComparatifForm = ({
 
 	return (
 		<form onSubmit={handleSubmit} className="form">
-			<input
-				type="text"
-				value={titre}
-				onChange={(e) => setTitre(e.target.value)}
-				placeholder="Titre"
-				required
-			/>
+			<h2>{comparatif ? "Modifier le Comparatif" : "Ajouter un Comparatif"}</h2>
+			<div className="form-group">
+				<label htmlFor="titre">Titre :</label>
+				<input
+					type="text"
+					value={titre}
+					onChange={(e) => setTitre(e.target.value)}
+					placeholder="Titre"
+					required
+				/>
+			</div>
 			<textarea
 				value={contenu}
 				onChange={(e) => setContenu(e.target.value)}

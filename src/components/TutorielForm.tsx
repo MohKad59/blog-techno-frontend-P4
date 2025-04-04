@@ -56,13 +56,17 @@ const TutorielForm = ({ tutoriel, produits, onSave }: TutorielFormProps) => {
 
 	return (
 		<form onSubmit={handleSubmit} className="form">
-			<input
-				type="text"
-				value={titre}
-				onChange={(e) => setTitre(e.target.value)}
-				placeholder="Titre"
-				required
-			/>
+			<h2>{tutoriel ? "Modifier le Tutoriel" : "Ajouter un Tutoriel"}</h2>
+			<div className="form-group">
+				<label htmlFor="titre">Titre :</label>
+				<input
+					type="text"
+					value={titre}
+					onChange={(e) => setTitre(e.target.value)}
+					placeholder="Titre"
+					required
+				/>
+			</div>
 			<textarea
 				value={contenu}
 				onChange={(e) => setContenu(e.target.value)}

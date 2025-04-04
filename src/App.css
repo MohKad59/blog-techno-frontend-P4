@@ -38,7 +38,8 @@
 }
 
 .navbar a {
-	color: #e0e0e0;
+	color: #00d4ff;
+	text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
 	text-decoration: none;
 	font-weight: 700;
 	transition: color 0.3s ease, text-shadow 0.3s ease;
@@ -284,26 +285,26 @@ h2 {
 }
 
 /* Styles spécifiques pour le groupe de choix photo */
-.photo-choice-group {
-	/* Pas de style spécifique */
-}
+/*.photo-choice-group {
+	/* Pas de style spécifique 
+}*/
 
-.photo-choice-group > label {
+/*.photo-choice-group > label {
 	/* Hérite de .form-group label */
-	/* S'assurer que le style est cohérent avec les autres labels .form-group */
-}
+/* S'assurer que le style est cohérent avec les autres labels .form-group 
+}*/
 
-.photo-choice-group > div {
+/*.photo-choice-group > div {
 	/* Revenir à l'espacement par défaut ou le supprimer si géré par .form-group */
-	/* margin-top: 0; */ 
-	/* padding-bottom: 0; */
-}
+/* margin-top: 0; */
+/* padding-bottom: 0; 
+}*/
 
 .radio-label {
-	display: inline-block; 
+	display: inline-block;
 	margin-right: 15px; /* Espacement standard entre radios */
-	font-weight: normal; 
-	color: #e0e0e0; 
+	font-weight: normal;
+	color: #e0e0e0;
 	cursor: pointer;
 	margin-bottom: 0;
 	font-size: inherit;
@@ -312,7 +313,7 @@ h2 {
 .radio-label input[type="radio"] {
 	margin-right: 5px;
 	cursor: pointer;
-	vertical-align: middle; 
+	vertical-align: middle;
 	transform: scale(1.0); /* Taille normale */
 }
 
