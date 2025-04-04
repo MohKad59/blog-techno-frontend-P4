@@ -7,6 +7,7 @@ interface Tutoriel {
 	titre: string;
 	contenu: string;
 	produit_nom: string;
+	produit_photo: string;
 	produit_id: number;
 }
 
@@ -14,6 +15,8 @@ interface Produit {
 	id: number;
 	nom: string;
 }
+
+const API_URL = process.env.REACT_APP_API_URL || "";
 
 const TutorielList = () => {
 	const [tutoriels, setTutoriels] = useState<Tutoriel[]>([]);
@@ -27,11 +30,11 @@ const TutorielList = () => {
 
 	const fetchTutoriels = async () => {
 		try {
-			const response = await axios.get(
+			const response = await axios.get<Tutoriel[]>(
 				`${process.env.REACT_APP_API_URL}/tutoriels`,
 			);
 			setTutoriels(response.data);
-			console.log("Tutoriels chargés :", response.data);
+			console.log("Tutoriels (avec photos) chargés :", response.data);
 		} catch (error) {
 			console.error("Erreur lors du chargement des tutoriels :", error);
 		}
@@ -81,22 +84,37 @@ const TutorielList = () => {
 				</button>
 			)}
 			<div className="grid">
-				{tutoriels.map((tutoriel) => (
-					<div key={tutoriel.id} className="card">
-						<h3>{tutoriel.titre}</h3>
-						<p>{tutoriel.contenu}</p>
-						<p>Produit: {tutoriel.produit_nom}</p>
-						<button type="button" onClick={() => setTutorielAEditer(tutoriel)}>
-							Modifier
-						</button>
-						<button
-							type="button"
-							onClick={() => supprimerTutoriel(tutoriel.id)}
-						>
-							Supprimer
-						</button>
-					</div>
-				))}
+				{tutoriels.map((tutoriel) => {
+					const produitImageUrl = tutoriel.produit_photo
+						? tutoriel.produit_photo.startsWith("http")
+							? tutoriel.produit_photo
+							: `${API_URL}/uploads/${tutoriel.produit_photo}`
+						: "";
+
+					return (
+						<div key={tutoriel.id} className="card">
+							<h3>{tutoriel.titre}</h3>
+							<h4>Produit: {tutoriel.produit_nom}</h4>
+							{produitImageUrl && (
+								<img
+									src={produitImageUrl}
+									alt={tutoriel.produit_nom}
+									style={{ maxWidth: "100px", maxHeight: "100px" }}
+								/>
+							)}
+							<p>{tutoriel.contenu}</p>
+							<button type="button" onClick={() => setTutorielAEditer(tutoriel)}>
+								Modifier
+							</button>
+							<button
+								type="button"
+								onClick={() => supprimerTutoriel(tutoriel.id)}
+							>
+								Supprimer
+							</button>
+						</div>
+					);
+				})}
 			</div>
 		</div>
 	);

@@ -89,12 +89,15 @@ h2 {
 	box-shadow: 0 0 30px rgba(26, 115, 232, 0.5);
 }
 
-.form input,
+/* Styles généraux pour les inputs */
+.form input[type="text"],
+.form input[type="number"],
+.form input[type="url"],
 .form textarea,
 .form select {
 	width: 100%;
 	padding: 0.8rem;
-	margin-bottom: 1rem;
+	/* margin-bottom: 1rem; Retiré car géré par form-group */
 	border: 1px solid #1a73e8;
 	border-radius: 6px;
 	background: #0d1b2a;
@@ -103,7 +106,24 @@ h2 {
 	transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.form input:focus,
+/* Input fichier avec style de base cohérent */
+.form input[type="file"] {
+	width: 100%;
+	padding: 0.65rem 0.8rem; /* Ajustement vertical pour ressembler aux autres */
+	border: 1px solid #1a73e8;
+	border-radius: 6px;
+	background: #0d1b2a;
+	color: #a8b2c1; /* Couleur plus grise pour le texte "aucun fichier" */
+	font-size: 0.95rem; /* Légèrement plus petit */
+	transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	cursor: pointer;
+}
+
+/* Styles pour les états focus */
+.form input[type="text"]:focus,
+.form input[type="number"]:focus,
+.form input[type="url"]:focus,
+.form input[type="file"]:focus,
 .form textarea:focus,
 .form select:focus {
 	outline: none;
@@ -121,6 +141,7 @@ h2 {
 	font-weight: 700;
 	text-transform: uppercase;
 	transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+	margin-top: 1rem; /* Ajouter un peu d'espace au-dessus du bouton */
 }
 
 .form button:hover {
@@ -248,4 +269,101 @@ h2 {
 	background: #adb5bd;
 	transform: scale(1.05);
 	box-shadow: 0 0 15px rgba(173, 181, 189, 0.7);
+}
+
+/* Styles pour les groupes de formulaire */
+.form-group {
+	margin-bottom: 1.5rem;
+}
+
+.form-group label {
+	display: block;
+	margin-bottom: 0.5rem;
+	color: #a8b2c1;
+	font-weight: bold;
+}
+
+/* Styles spécifiques pour le groupe de choix photo */
+.photo-choice-group {
+	/* Pas de style spécifique */
+}
+
+.photo-choice-group > label {
+	/* Hérite de .form-group label */
+	/* S'assurer que le style est cohérent avec les autres labels .form-group */
+}
+
+.photo-choice-group > div {
+	/* Revenir à l'espacement par défaut ou le supprimer si géré par .form-group */
+	/* margin-top: 0; */ 
+	/* padding-bottom: 0; */
+}
+
+.radio-label {
+	display: inline-block; 
+	margin-right: 15px; /* Espacement standard entre radios */
+	font-weight: normal; 
+	color: #e0e0e0; 
+	cursor: pointer;
+	margin-bottom: 0;
+	font-size: inherit;
+}
+
+.radio-label input[type="radio"] {
+	margin-right: 5px;
+	cursor: pointer;
+	vertical-align: middle; 
+	transform: scale(1.0); /* Taille normale */
+}
+
+/* Styles pour les groupes de formulaire */
+.form-group {
+	margin-bottom: 1.5rem; /* Augmenter l'espacement entre les groupes */
+}
+
+.form-group label {
+	display: block; /* Chaque label sur sa propre ligne */
+	margin-bottom: 0.5rem; /* Espace sous le label */
+	color: #a8b2c1; /* Couleur de label légèrement plus claire */
+	font-weight: bold;
+}
+
+/* Styles spécifiques pour le groupe de choix photo */
+.photo-choice-group label {
+	display: inline-block; /* Mettre les radios sur la même ligne */
+	margin-right: 15px; /* Espace entre les options radio */
+	font-weight: normal; /* Ne pas mettre les labels radio en gras */
+	color: #e0e0e0; /* Couleur normale */
+	cursor: pointer;
+}
+
+.photo-choice-group input[type="radio"] {
+	margin-right: 5px;
+	cursor: pointer;
+	vertical-align: middle; /* Mieux aligner radio et texte */
+}
+
+/* Ajustement pour les inputs spécifiques (URL, Fichier) pour correspondre aux autres */
+.form-group input[type="file"],
+.form-group input[type="url"] {
+	width: 100%; /* Utiliser toute la largeur disponible */
+	padding: 0.8rem;
+	border: 1px solid #1a73e8;
+	border-radius: 6px;
+	background: #0d1b2a;
+	color: #e0e0e0;
+	font-size: 1rem;
+	transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input[type="file"] {
+	padding-top: 0.6rem; /* Ajustement padding pour input fichier */
+	padding-bottom: 0.6rem;
+}
+
+.form-group input[type="file"]:focus,
+.form-group input[type="url"]:focus {
+	outline: none;
+	border-color: #00d4ff;
+	box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
 }

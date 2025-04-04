@@ -7,12 +7,16 @@ interface Avis {
 	contenu: string;
 	note: number;
 	produit_id: number;
+	produit_nom: string;
+	produit_photo: string;
 }
 
 interface Produit {
 	id: number;
 	nom: string;
 }
+
+const API_URL = process.env.REACT_APP_API_URL || "";
 
 const AvisList = () => {
 	const [avis, setAvis] = useState<Avis[]>([]);
@@ -21,28 +25,33 @@ const AvisList = () => {
 
 	useEffect(() => {
 		fetchAvis();
-		fetchProduits();
+		fetchProduitsPourForm();
 	}, []);
 
 	const fetchAvis = async () => {
 		try {
-			const response = await axios.get(`${process.env.REACT_APP_API_URL}/avis`);
+			const response = await axios.get<Avis[]>(
+				`${process.env.REACT_APP_API_URL}/avis`,
+			);
 			setAvis(response.data);
-			console.log("Avis chargés :", response.data);
+			console.log("Avis (avec infos produit) chargés :", response.data);
 		} catch (error) {
 			console.error("Erreur lors du chargement des avis :", error);
 		}
 	};
 
-	const fetchProduits = async () => {
+	const fetchProduitsPourForm = async () => {
 		try {
-			const response = await axios.get(
+			const response = await axios.get<Produit[]>(
 				`${process.env.REACT_APP_API_URL}/produits`,
 			);
 			setProduits(response.data);
-			console.log("Produits chargés pour avis :", response.data);
+			console.log("Produits chargés pour le formulaire Avis :", response.data);
 		} catch (error) {
-			console.error("Erreur lors du chargement des produits :", error);
+			console.error(
+				"Erreur lors du chargement des produits pour le formulaire :",
+				error,
+			);
 		}
 	};
 
@@ -52,7 +61,7 @@ const AvisList = () => {
 			console.log(`Avis ${id} supprimé`);
 			fetchAvis();
 		} catch (error) {
-			console.error("Erreur lors de la suppression de l’avis :", error);
+			console.error("Erreur lors de la suppression de l'avis :", error);
 		}
 	};
 
@@ -78,19 +87,34 @@ const AvisList = () => {
 				</button>
 			)}
 			<div className="grid">
-				{avis.map((avis) => (
-					<div key={avis.id} className="card">
-						<p>{avis.contenu}</p>
-						<p>Note: {avis.note}/5</p>
-						<p>Produit ID: {avis.produit_id}</p>
-						<button type="button" onClick={() => setAvisAEditer(avis)}>
-							Modifier
-						</button>
-						<button type="button" onClick={() => supprimerAvis(avis.id)}>
-							Supprimer
-						</button>
-					</div>
-				))}
+				{avis.map((unAvis) => {
+					const produitImageUrl = unAvis.produit_photo
+						? unAvis.produit_photo.startsWith("http")
+							? unAvis.produit_photo
+							: `${API_URL}/uploads/${unAvis.produit_photo}`
+						: "";
+
+					return (
+						<div key={unAvis.id} className="card">
+							{produitImageUrl && (
+								<img
+									src={produitImageUrl}
+									alt={`Produit: ${unAvis.produit_nom}`}
+									style={{ maxWidth: "100px", maxHeight: "100px" }}
+								/>
+							)}
+							<h4>Produit: {unAvis.produit_nom}</h4>
+							<p>{unAvis.contenu}</p>
+							<p>Note: {unAvis.note}/5</p>
+							<button type="button" onClick={() => setAvisAEditer(unAvis)}>
+								Modifier
+							</button>
+							<button type="button" onClick={() => supprimerAvis(unAvis.id)}>
+								Supprimer
+							</button>
+						</div>
+					);
+				})}
 			</div>
 		</div>
 	);
